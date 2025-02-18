@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useSession } from '../ctx';
+import { useSession } from '../../context/ctx';
  
 
 export default function Index() {
@@ -8,7 +8,7 @@ export default function Index() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text
         onPress={() => {
-          // The `app/(app)/_layout.tsx` will redirect to the sign-in screen.
+          
           signOut();
         }}>
         Sign Out

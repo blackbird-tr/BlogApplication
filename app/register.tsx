@@ -1,22 +1,20 @@
 import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import { useSession } from '@/context/ctx';
 
-export default function LoginScreen() {
+export default function register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {signIn} = useSession()
-  const handleLogin = () => {
-    signIn();
-    router.replace('/');
+
+  const handleRegister = () => {
     console.log('Email:', email);
     console.log('Password:', password);
+    router.replace('/signIn')
   };
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Giriş Yap</Text>
+      <Text style={{ fontSize: 24, marginBottom: 20 }}>Kayıt Ol</Text>
 
       <TextInput
         placeholder="E-posta"
@@ -49,11 +47,10 @@ export default function LoginScreen() {
         }}
       />
 
-      <Button title="Giriş Yap" onPress={handleLogin} />
-
-      <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={{ marginTop: 15, color: 'blue' }}>Kayıt Ol</Text>
-      </TouchableOpacity>
+      <Button title="Kayıt Ol" onPress={handleRegister} />
+      <TouchableOpacity onPress={() => router.push('/signIn')}>
+              <Text style={{ marginTop: 15, color: 'blue' }}>Giriş</Text>
+            </TouchableOpacity>
     </View>
   );
 }
