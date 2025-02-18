@@ -1,5 +1,10 @@
-import { Stack } from "expo-router";
+import { Slot } from 'expo-router'; 
+import { SessionProvider } from './ctx';
 
-export default function RootLayout() {
-  return <Stack />;
+export default function Root() { 
+  return (
+    <SessionProvider>
+      <Slot />
+    </SessionProvider>
+  );
 }
