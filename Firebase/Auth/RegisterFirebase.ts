@@ -3,17 +3,14 @@ import {auth} from '../firebaseConfig'
 
 
 
-export function logInFire(email:string,password:string){
+export function SignUpFire(email:string,password:string){
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up 
-      const user = userCredential.user;
-      // ...
+    .then((userCredential) => { 
+      const user = userCredential.user; 
     })
     .catch((error) => {
       const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
+      const errorMessage = error.message; 
     });
 
 }

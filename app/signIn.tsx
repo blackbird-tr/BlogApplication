@@ -5,10 +5,11 @@ import { useSession } from '@/context/ctx';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
+  const [id, setid] = useState("");
   const [password, setPassword] = useState('');
   const {signIn} = useSession()
-  const handleLogin = () => {
-    signIn();
+  const handleLogin = async () => {
+    await signIn(email, password);
     router.replace('/');
     console.log('Email:', email);
     console.log('Password:', password);

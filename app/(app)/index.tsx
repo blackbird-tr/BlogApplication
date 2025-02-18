@@ -3,7 +3,7 @@ import { useSession } from '../../context/ctx';
  
 
 export default function Index() {
-  const { signOut } = useSession();
+  const { session,signOut } = useSession();
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text
@@ -12,7 +12,7 @@ export default function Index() {
           signOut();
         }}>
         Sign Out
-      </Text>
+      </Text> 
     </View>
   );
 }

@@ -1,15 +1,21 @@
 import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
+import { SignUpFire } from '@/Firebase/Auth/RegisterFirebase';
 
 export default function register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    console.log('Email:', email);
-    console.log('Password:', password);
-    router.replace('/signIn')
+     
+    try{
+      SignUpFire(email,password)
+      router.replace('/signIn')
+    }catch(error){
+      alert('there occur an error')
+    }
+    
   };
 
   return (
