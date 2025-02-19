@@ -9,8 +9,7 @@ export default function Home() {
           onPress={() => {
             
             router.push('/(app)/blogdetail')
-          }}>
-          go
+          }}> 
         </Text> 
       </View>
   )
