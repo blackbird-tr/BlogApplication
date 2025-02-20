@@ -1,46 +1,85 @@
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { router } from 'expo-router'; 
-import { addmyBlog } from '@/BlogProcess/BlogProcess';
-  
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { addmyBlog, updateBlog } from "@/BlogProcess/BlogProcess";
+import { useSession } from "@/context/ctx";
 
 export default function AddBlog() {
-  const [name, setName] = useState('');
-  const [content, setContent] = useState(''); 
-  
-  const handleSave = async () => {
-    if (name.trim() === '' || content.trim() === '') return;
-    try{
-      addmyBlog(name,content); 
+  const { b_id, mname, mcontent } = useLocalSearchParams();
+
+  const [name, setName] = useState<string>(mname?.toString() || "");
+  const [content, setContent] = useState<string>(mcontent?.toString() || "");
+
+  const blogid = Number(b_id);
+  const { session } = useSession();
+
+  const Updateblog = async (name: string, content: string, id: number) => {
+    try {
+      if (!session) {
+        return;
+      }
+      await updateBlog(name, content, id, session);
+    } catch (error) {
+      console.error("Failed to delete blog", error);
     }
-    catch(error){
-      alert("failed")
-    }
-    router.push('/')
   };
- 
+  const handleSave = async () => {
+    if (name.trim() === "" || content.trim() === "") return;
+    try {
+      if (blogid > 0) {
+        await Updateblog(name, content, blogid);
+      } else {
+        await addmyBlog(name, content);
+      }
+    } catch (error) {
+      alert("failed");
+    }
+    router.replace("/");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Başlık:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Blog başlığını girin"
-        value={name}
-        onChangeText={setName}
-      />
+      {blogid < 0 ? (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="Blog başlığını girin"
+            value={name}
+            onChangeText={setName}
+          />
 
-      <Text style={styles.label}>İçerik:</Text>
-      <TextInput
-        style={styles.textArea}
-        placeholder="Blog içeriğini girin"
-        value={content}
-        onChangeText={setContent}
-        multiline
-      />
+          <Text style={styles.label}>İçerik:</Text>
+          <TextInput
+            style={styles.textArea}
+            placeholder="Blog içeriğini girin"
+            value={content}
+            onChangeText={setContent}
+            multiline
+          />
 
-      <Button title="Kaydet" onPress={handleSave} />
+          <Button title="Add" onPress={handleSave} />
+        </>
+      ) : (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="Blog başlığını girin"
+            value={name}
+            onChangeText={setName}
+          />
 
-       
+          <Text style={styles.label}>İçerik:</Text>
+          <TextInput
+            style={styles.textArea}
+            value={content}
+            onChangeText={setContent}
+            multiline
+          />
+
+          <Button title="Update" onPress={handleSave} />
+        </>
+      )}
     </View>
   );
 }
@@ -49,17 +88,17 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   input: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 12,
@@ -67,11 +106,11 @@ const styles = StyleSheet.create({
   textArea: {
     height: 120,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     marginBottom: 12,
   },
   blogList: {
@@ -80,20 +119,20 @@ const styles = StyleSheet.create({
   blogItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
     marginBottom: 10,
   },
   blogTitle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   emptyText: {
-    textAlign: 'center',
-    color: '#888',
+    textAlign: "center",
+    color: "#888",
   },
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

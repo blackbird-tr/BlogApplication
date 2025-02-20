@@ -33,11 +33,9 @@ export async function updateBlog(name:string,content:string,id:number,session:st
    
     if(!session) return null;
 
-    const blog=await CheckBlogExists(session,id)
-    console.log(blog)
-    if(blog){
-        console.log(blog)
-        await UpdateFireBlog(id,{name,content});
+    const blog=await CheckBlogExists(session,id) 
+    if(blog){ 
+        await UpdateFireBlog(blog,{name,content});
         await UpdateMyBlog(id,name,content);
     }
     else{
