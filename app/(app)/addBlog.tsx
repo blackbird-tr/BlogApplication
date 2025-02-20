@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { router } from 'expo-router'; 
-import { AddMyBlog } from '@/SQLite/SqLiteProcess';
+import { addmyBlog } from '@/BlogProcess/BlogProcess';
   
 
 export default function AddBlog() {
@@ -11,7 +11,7 @@ export default function AddBlog() {
   const handleSave = async () => {
     if (name.trim() === '' || content.trim() === '') return;
     try{
-      AddMyBlog(name,content); 
+      addmyBlog(name,content); 
     }
     catch(error){
       alert("failed")

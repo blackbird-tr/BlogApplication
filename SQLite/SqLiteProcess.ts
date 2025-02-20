@@ -18,7 +18,7 @@ export async function DeleteDatabase() {
   return executeQuery(db.delete(blogTable), "Database deletion failed");
 }
 
-export async function GetBlog() {
+export async function GetMyBlogs() {
   return executeQuery(db.select().from(blogTable), "Fetching blogs failed");
 }
 
@@ -29,14 +29,14 @@ export async function AddMyBlog(name: string, content: string) {
   );
 }
 
-export async function UpdateBlog(id: number, name: string, content: string) {
+export async function UpdateMyBlog(id: number, name: string, content: string) {
   return executeQuery(
     db.update(blogTable).set({ name, content }).where(eq(blogTable.id, id)),
     "Update failed"
   );
 }
 
-export async function DeleteBlog(id: number) {
+export async function DeleteMyBlog(id: number) {
   return executeQuery(
     db.delete(blogTable).where(eq(blogTable.id, id)),
     "Delete failed"
