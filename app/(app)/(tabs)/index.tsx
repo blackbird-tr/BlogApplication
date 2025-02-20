@@ -1,97 +1,126 @@
-import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess";
-import { DeleteBlog, DeleteDatabase, GetBlog } from "@/SQLite/SqLiteProcess";
+ 
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import { useSession } from "@/context/ctx";
 import {
   View,
   Text,
-  Modal,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
-} from "react-native";
+  FlatList,
+} from "react-native"; 
+import { getMyBlog,undeployBlog,addmyBlog,deleteBlog,deployBlog,updateBlog, } from "@/BlogProcess/BlogProcess";
+import { DeleteDatabase } from "@/SQLite/SqLiteProcess";
+import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess"; 
 interface BlogType {
   id: number;
   name: string;
   content: string;
 }
 
-export default function App() {
-  const [blogs, setblogs] = useState<BlogType[]>([]);
+export default function App() { 
+  const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
-  const { session }  = useSession(); 
-  useEffect(() => { 
+  const { session } = useSession();
+
+  useEffect(() => {
     async function fetchBlogs() {
       try {
-        const data = await GetBlog();  
-        console.log(data)
-        setblogs(data);  
+        const data = await getMyBlog();
+        console.log(data);
+        setBlogs(data);
       } catch (error) {
         console.error("Failed to fetch blogs", error);
       }
-    } 
+    }
     fetchBlogs();
   }, [refresh]);
 
-  useEffect(() => { 
-    async function fetchBlogs() {
-      try {
-        const data = await GetBlog();  
-        console.log(data)
-        setblogs(data);  
-      } catch (error) {
-        console.error("Failed to fetch blogs", error);
-      }
-    } 
-    fetchBlogs();
-  }, []);
-  const deletedb = async () => { 
+  const DeleteDb = async () => {
     try {
-      await DeleteDatabase()
-      setRefresh(prev => !prev); 
-     } catch (error) {
-       console.error("Failed to delete db", error);
-     }
-  };
-  const DeleteMyBlog = async (id:number) => { 
-    try {
-      await DeleteBlog(id)
-      setRefresh(prev => !prev); 
-     } catch (error) {
-       console.error("Failed to delete db", error);
-     }
+      await DeleteDatabase();
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Failed to delete db", error);
+    }
   };
 
-  const handleButton = () => { 
+  const DeleteMyBlog = async (id: number) => {
+    try {
+      if(!session){
+        return;
+      }
+
+      await deleteBlog(id,session);
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Failed to delete blog", error);
+    }
+  };
+
+  const Updateblog = async (name:string,content:string,id: number) => {
+    try {
+      if(!session){
+        return;
+      }
+      await updateBlog(name,content,id,session);
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Failed to delete blog", error);
+    }
+  };
+
+  const handleButton = () => {
     router.push("/(app)/addBlog");
   };
-  const deployBlog = (blog:BlogType) => { 
-    if (!session) {
-      console.log("Session bulunamadı!");
+
+  const DeployBlog =  (blog: BlogType) => { 
+    console.log(blog) 
+    if(!session){
       return;
-    } 
-    DeployBlog(blog.id,blog.name,blog.content,session)
- 
+    }
+      deployBlog(blog.id,blog.name,blog.content,session)
   };
+
   return (
     <View style={styles.container}>
-      {blogs.length === 0 ? (
-        <Text>No blogs available</Text> // Eğer blog yoksa mesaj göster
-      ) : (
-        blogs.map((blog) => (
-          <TouchableOpacity onPress={()=>deployBlog(blog)} key={blog.id} style={styles.blogCard}>
+      <FlatList
+        data={blogs}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item: blog }) => (
+          <View key={blog.id} style={styles.blogCard}>
             <Text style={styles.blogId}>ID: {blog.id}</Text>
             <Text style={styles.blogName}>{blog.name}</Text>
             <Text style={styles.blogContent}>{blog.content}</Text>
-          </TouchableOpacity>
-        ))
-      )}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => DeleteMyBlog(blog.id)}
+              >
+                <Text style={styles.buttonText}>Sil</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.updateButton}
+                onPress={() => Updateblog(blog.name,blog.content,blog.id)}
+              >
+                <Text style={styles.buttonText}>Güncelle</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deployButton}
+                onPress={() => DeployBlog(blog)}
+              >
+                <Text style={styles.buttonText}>Deploy</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        ListEmptyComponent={<Text>No blogs available</Text>}
+      />
 
       <TouchableOpacity style={styles.button} onPress={handleButton}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button2} onPress={deletedb}>
+      <TouchableOpacity style={styles.button2} onPress={DeleteDb}>
         <Text style={styles.buttonText}>delete</Text>
       </TouchableOpacity>
     </View>
@@ -101,8 +130,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start", // Kartlar üstten başlayarak yayılacak
-    alignItems: "stretch", // Kartların genişliğini tam alacak şekilde ayarlanır
+    justifyContent: "flex-start",
+    alignItems: "stretch",
     padding: 16,
     backgroundColor: "#f9f9f9",
   },
@@ -111,26 +140,43 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    width: "100%", // Kartın genişliği %100
+    width: "100%",
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
-  blogId: {
-    fontWeight: "bold",
+  blogId: { fontWeight: "bold" },
+  blogName: { fontSize: 18, marginTop: 8 },
+  blogContent: { marginTop: 4, color: "#555" },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
-  blogName: {
-    fontSize: 18,
-    marginTop: 8,
+  deleteButton: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    alignItems: "center",
+    marginRight: 5,
   },
-  blogContent: {
-    marginTop: 4,
-    color: "#555",
+  updateButton: {
+    backgroundColor: "orange",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    alignItems: "center",
+    marginLeft: 5,
+  },deployButton: {
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    alignItems: "center",
+    marginLeft: 5,
   },
   button: {
     position: "absolute",
@@ -156,6 +202,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontSize: 30,
+    fontSize: 18,
   },
 });

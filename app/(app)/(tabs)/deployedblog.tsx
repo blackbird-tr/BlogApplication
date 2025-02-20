@@ -1,16 +1,17 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { GetBlogs } from '@/Firebase/FireStore/FireStoreProcess';
-import { Ionicons } from '@expo/vector-icons';
 
-export default function Home() {
+import { Ionicons } from '@expo/vector-icons';
+import { getFireBlog } from '@/BlogProcess/BlogProcess';
+
+export default function deployedblog() {
   const [blogs, setBlogs] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchBlogs = async () => {
     setLoading(true);
-    const fetchedBlogs = await GetBlogs();
+    const fetchedBlogs = await getFireBlog()
     setBlogs(fetchedBlogs);
     setLoading(false);
   };
