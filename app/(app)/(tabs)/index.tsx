@@ -1,6 +1,8 @@
+import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess";
 import { DeleteBlog, DeleteDatabase, GetBlog } from "@/SQLite/SqLiteProcess";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
+import { useSession } from "@/context/ctx";
 import {
   View,
   Text,
@@ -18,6 +20,7 @@ interface BlogType {
 export default function App() {
   const [blogs, setblogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
+  const { session }  = useSession(); 
   useEffect(() => { 
     async function fetchBlogs() {
       try {
@@ -63,13 +66,21 @@ export default function App() {
   const handleButton = () => { 
     router.push("/(app)/addBlog");
   };
+  const deployBlog = (blog:BlogType) => { 
+    if (!session) {
+      console.log("Session bulunamadı!");
+      return;
+    } 
+    DeployBlog(blog.id,blog.name,blog.content,session)
+ 
+  };
   return (
     <View style={styles.container}>
       {blogs.length === 0 ? (
         <Text>No blogs available</Text> // Eğer blog yoksa mesaj göster
       ) : (
         blogs.map((blog) => (
-          <TouchableOpacity key={blog.id} style={styles.blogCard}>
+          <TouchableOpacity onPress={()=>deployBlog(blog)} key={blog.id} style={styles.blogCard}>
             <Text style={styles.blogId}>ID: {blog.id}</Text>
             <Text style={styles.blogName}>{blog.name}</Text>
             <Text style={styles.blogContent}>{blog.content}</Text>
