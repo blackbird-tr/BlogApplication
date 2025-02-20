@@ -24,6 +24,7 @@ export default function AppLayout() {
     <Stack>
       <Stack.Screen name='(tabs)' options={{headerShown:false}}></Stack.Screen>
       <Stack.Screen name='BlogDetail' options={{headerShown:false}}></Stack.Screen>
+      <Stack.Screen name='addBlog' options={{headerShown:false}}></Stack.Screen>
     </Stack>
   )
 }
