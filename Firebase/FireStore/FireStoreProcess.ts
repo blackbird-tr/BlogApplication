@@ -58,18 +58,18 @@ export async function DeleteFireBlog(id: string) {
   }
 }
  
-export async function UpdateFireBlog(blogId: number, updatedData: { name?: string; content?: string }) {
+export async function UpdateFireBlog(id: string, updatedData: { name?: string; content?: string }) {
   try {
-    const blogRef = doc(db, "blogs", blogId.toString());
+    const blogRef = doc(db, "blogs", id);
     const blogSnap = await getDoc(blogRef);
 
     if (!blogSnap.exists()) {
-      console.error("Güncellenmek istenen blog bulunamadı:", blogId);
+      console.error("Güncellenmek istenen blog bulunamadı:", id);
       return;
     }
 
     await updateDoc(blogRef, updatedData);
-    console.log("Blog başarıyla güncellendi:", blogId);
+    console.log("Blog başarıyla güncellendi:", id);
   } catch (error) {
     console.error("Blog güncellenirken hata oluştu:", error);
   }

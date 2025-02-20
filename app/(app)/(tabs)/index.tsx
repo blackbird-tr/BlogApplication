@@ -71,8 +71,23 @@ export default function App() {
   };
 
   const handleButton = () => {
-    router.push("/(app)/addBlog");
+    router.push({
+      pathname: "/(app)/addBlog",
+      params: { 
+        b_id:-1}}) 
   };
+  const handleUButton = (b_id:number,name:string,content:string) => {
+     
+    router.push({
+      pathname: "/(app)/addBlog",
+      params: { 
+        b_id:b_id,
+        mname:name,
+        mcontent:content
+      }}) 
+    
+  };
+
 
   const DeployBlog =  (blog: BlogType) => { 
     console.log(blog) 
@@ -101,7 +116,7 @@ export default function App() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.updateButton}
-                onPress={() => Updateblog(blog.name,blog.content,blog.id)}
+                onPress={() => handleUButton(blog.id,blog.name,blog.content)}
               >
                 <Text style={styles.buttonText}>Güncelle</Text>
               </TouchableOpacity>
