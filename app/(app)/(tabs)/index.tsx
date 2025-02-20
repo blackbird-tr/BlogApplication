@@ -11,17 +11,30 @@ import {
 } from "react-native"; 
 import { getMyBlog,undeployBlog,addmyBlog,deleteBlog,deployBlog,updateBlog, } from "@/BlogProcess/BlogProcess";
 import { DeleteDatabase } from "@/SQLite/SqLiteProcess";
-import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess"; 
+import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess";  
+import * as SQLite from 'expo-sqlite'; 
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { blogTable } from "@/db/schema";
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import migrations from '../../../drizzle/migrations';
 interface BlogType {
   id: number;
   name: string;
   content: string;
 }
 
+const expo = SQLite.openDatabaseSync('db.db');
+const db = drizzle(expo);
 export default function App() { 
   const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
   const { session } = useSession();
+  const { success, error } = useMigrations(db, migrations);
+
+  useEffect(() => {
+     
+  }, [success]);
+
 
   useEffect(() => {
     async function fetchBlogs() {
