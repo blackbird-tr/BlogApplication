@@ -1,0 +1,1 @@
+ALTER TABLE `blog_table` ADD `isDeploy` integer DEFAULT 0;

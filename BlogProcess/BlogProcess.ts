@@ -1,5 +1,5 @@
 
-import { AddMyBlog,DeleteMyBlog,GetMyBlogs,UpdateMyBlog,DeleteDatabase } from '@/SQLite/SqLiteProcess';
+import { AddMyBlog,DeleteMyBlog,UpdateBlogDeployStatus,GetMyBlogs,UpdateMyBlog,DeleteDatabase } from '@/SQLite/SqLiteProcess';
 import { GetFireBlogs,DeleteFireBlog,UpdateFireBlog,DeployBlog,CheckBlogExists } from '@/Firebase/FireStore/FireStoreBlog';
 import { useEffect, useState } from 'react';
 
@@ -66,11 +66,22 @@ export async function deployBlog(id:number,name:string,content:string,session:st
           return;
         }
         await DeployBlog(id, name, content, session);
+        await UpdateBlogDeployStatus(id,1);
         console.log("Blog başarıyla eklendi!");
         console.log("1")
     
 }
-export async function undeployBlog(id:string){
-    await DeleteFireBlog(id);
+export async function undeployBlog(id:number,session:string){
+    if(!session) return null;
+
+    const blog=await CheckBlogExists(session,id)
+    if(blog){  
+        await DeleteFireBlog(blog);
+        await UpdateBlogDeployStatus(id,0);
+    }
+    else{
+        throw Error('blog not found');
+    }
+   
     
 } 

@@ -1,12 +1,13 @@
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { addmyBlog, updateBlog } from "@/BlogProcess/BlogProcess";
+import { addmyBlog, undeployBlog, updateBlog } from "@/BlogProcess/BlogProcess";
 import { useSession } from "@/context/ctx";
+import Refresh from "../refresh";
 
 export default function AddBlog() {
   const { b_id, mname, mcontent } = useLocalSearchParams();
-
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState<string>(mname?.toString() || "");
   const [content, setContent] = useState<string>(mcontent?.toString() || "");
 
@@ -18,18 +19,28 @@ export default function AddBlog() {
       if (!session) {
         return;
       }
+      setLoading(true);
       await updateBlog(name, content, id, session);
+      setLoading(false);
     } catch (error) {
       console.error("Failed to delete blog", error);
     }
   };
   const handleSave = async () => {
+    if (!session) {
+      return;
+    }
     if (name.trim() === "" || content.trim() === "") return;
+
     try {
       if (blogid > 0) {
+        setLoading(true);
         await Updateblog(name, content, blogid);
+        setLoading(false);
       } else {
+        setLoading(true);
         await addmyBlog(name, content);
+        setLoading(false);
       }
     } catch (error) {
       alert("failed");
@@ -80,6 +91,7 @@ export default function AddBlog() {
           <Button title="Update" onPress={handleSave} />
         </>
       )}
+      {loading && <Refresh/>}
     </View>
   );
 }
