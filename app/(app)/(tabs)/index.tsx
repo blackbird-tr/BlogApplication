@@ -1,4 +1,3 @@
- 
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useSession } from "@/context/ctx";
@@ -8,32 +7,37 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-} from "react-native"; 
-import { getMyBlog,undeployBlog,addmyBlog,deleteBlog,deployBlog,updateBlog, } from "@/BlogProcess/BlogProcess";
+} from "react-native";
+import {
+  getMyBlog,
+  undeployBlog,
+  addmyBlog,
+  deleteBlog,
+  deployBlog,
+  updateBlog,
+} from "@/BlogProcess/BlogProcess";
 import { DeleteDatabase } from "@/SQLite/SqLiteProcess";
-import * as SQLite from 'expo-sqlite'; 
-import { drizzle } from 'drizzle-orm/expo-sqlite';
+import * as SQLite from "expo-sqlite";
+import { drizzle } from "drizzle-orm/expo-sqlite";
 import { blogTable } from "@/db/schema";
-import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import migrations from '../../../drizzle/migrations';
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "../../../drizzle/migrations";
 interface BlogType {
   id: number;
   name: string;
   content: string;
+  isDeploy: number;
 }
 
-const expo = SQLite.openDatabaseSync('db.db');
+const expo = SQLite.openDatabaseSync("db.db");
 const db = drizzle(expo);
-export default function App() { 
+export default function App() {
   const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
   const { session } = useSession();
   const { success, error } = useMigrations(db, migrations);
 
-  useEffect(() => {
-     
-  }, [success]);
-
+  useEffect(() => {}, [success]);
 
   useEffect(() => {
     async function fetchBlogs() {
@@ -47,27 +51,14 @@ export default function App() {
     }
     fetchBlogs();
   }, [refresh]);
- 
 
   const DeleteMyBlog = async (id: number) => {
     try {
-      if(!session){
+      if (!session) {
         return;
       }
 
-      await deleteBlog(id,session);
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error("Failed to delete blog", error);
-    }
-  };
-
-  const Updateblog = async (name:string,content:string,id: number) => {
-    try {
-      if(!session){
-        return;
-      }
-      await updateBlog(name,content,id,session);
+      await deleteBlog(id, session);
       setRefresh((prev) => !prev);
     } catch (error) {
       console.error("Failed to delete blog", error);
@@ -77,28 +68,39 @@ export default function App() {
   const handleButton = () => {
     router.push({
       pathname: "/(app)/addBlog",
-      params: { 
-        b_id:-1}}) 
+      params: {
+        b_id: -1,
+      },
+    });
   };
-  const handleUButton = (b_id:number,name:string,content:string) => {
-     
+  const handleUButton = (b_id: number, name: string, content: string) => {
     router.push({
       pathname: "/(app)/addBlog",
-      params: { 
-        b_id:b_id,
-        mname:name,
-        mcontent:content
-      }}) 
-    
+      params: {
+        b_id: b_id,
+        mname: name,
+        mcontent: content,
+      },
+    });
   };
 
-
-  const DeployBlog =  (blog: BlogType) => { 
-    console.log(blog) 
-    if(!session){
+  const DeployBlog = async (blog: BlogType) => {
+    console.log(blog);
+    
+    if (!session) {
       return;
     }
-      deployBlog(blog.id,blog.name,blog.content,session)
+    await deployBlog(blog.id, blog.name, blog.content, session);
+    setRefresh(!refresh)
+  };
+  const UnDeployBlog = async (blog: BlogType) => {
+    console.log(blog);
+    
+    if (!session) {
+      return;
+    }
+   await undeployBlog(blog.id, session);
+    setRefresh(!refresh)
   };
 
   return (
@@ -120,16 +122,25 @@ export default function App() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.updateButton}
-                onPress={() => handleUButton(blog.id,blog.name,blog.content)}
+                onPress={() => handleUButton(blog.id, blog.name, blog.content)}
               >
                 <Text style={styles.buttonText}>Güncelle</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.deployButton}
-                onPress={() => DeployBlog(blog)}
-              >
-                <Text style={styles.buttonText}>Deploy</Text>
-              </TouchableOpacity>
+              {blog.isDeploy ==0 ? (
+                <TouchableOpacity
+                  style={styles.deployButton}
+                  onPress={() => DeployBlog(blog)}
+                >
+                  <Text style={styles.buttonText}>Deploy</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.undeployButton}
+                  onPress={() => UnDeployBlog(blog)}
+                >
+                  <Text style={styles.buttonText}>UnDeploy</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         )}
@@ -139,7 +150,6 @@ export default function App() {
       <TouchableOpacity style={styles.button} onPress={handleButton}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
-       
     </View>
   );
 }
@@ -187,8 +197,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginLeft: 5,
-  },deployButton: {
+  },
+  deployButton: {
     backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    alignItems: "center",
+    marginLeft: 5,
+  },
+  undeployButton: {
+    backgroundColor: "gray",
     padding: 10,
     borderRadius: 5,
     flex: 1,

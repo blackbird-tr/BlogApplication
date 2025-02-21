@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { addmyBlog, updateBlog } from "@/BlogProcess/BlogProcess";
+import { addmyBlog, undeployBlog, updateBlog } from "@/BlogProcess/BlogProcess";
 import { useSession } from "@/context/ctx";
 
 export default function AddBlog() {
@@ -24,9 +24,13 @@ export default function AddBlog() {
     }
   };
   const handleSave = async () => {
+    if (!session) {
+      return;
+    }
     if (name.trim() === "" || content.trim() === "") return;
+
     try {
-      if (blogid > 0) {
+      if (blogid > 0) { 
         await Updateblog(name, content, blogid);
       } else {
         await addmyBlog(name, content);

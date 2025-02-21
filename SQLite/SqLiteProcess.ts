@@ -35,6 +35,15 @@ export async function UpdateMyBlog(id: number, name: string, content: string) {
     "Update failed"
   );
 }
+export async function UpdateBlogDeployStatus(id: number, isDeploy: number) {
+  return executeQuery(
+    db.update(blogTable)
+      .set({ isDeploy })
+      .where(eq(blogTable.id, id)),
+    "Update deploy status failed"
+  );
+}
+
 
 export async function DeleteMyBlog(id: number) {
   return executeQuery(
