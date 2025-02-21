@@ -1,60 +1,35 @@
-import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { useSession } from '@/context/ctx';
+import LogInForm from '@/Components/AuthComp/Login/LogInForm';
+import Header from '@/Components/AuthComp/Register/Header';
+import Refresh from './refresh';
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [id, setid] = useState("");
-  const [password, setPassword] = useState('');
-  const {signIn} = useSession()
-  const handleLogin = async () => {
-    await signIn(email, password);
+export default function LoginScreen() { 
+  const { signIn } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  type FormData = {
+    email: string;
+    password: string;
+  };
+
+  const handleLogin = async (formData: FormData) => { 
+    setLoading(true);
+    await signIn(formData.email, formData.password);
+    setLoading(false);
     router.replace('/');
-    console.log('Email:', email);
-    console.log('Password:', password);
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Giriş Yap</Text>
-
-      <TextInput
-        placeholder="E-posta"
-        value={email}
-        onChangeText={setEmail}
-        style={{
-          width: 250,
-          height: 40,
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 10,
-          paddingHorizontal: 10,
-          borderRadius: 5,
-        }}
-      />
-
-      <TextInput
-        placeholder="Şifre"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{
-          width: 250,
-          height: 40,
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 10,
-          paddingHorizontal: 10,
-          borderRadius: 5,
-        }}
-      />
-
-      <Button title="Giriş Yap" onPress={handleLogin} />
-
-      <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={{ marginTop: 15, color: 'blue' }}>Kayıt Ol</Text>
-      </TouchableOpacity>
+    <View style={{ flex: 1 }}>
+      <Header HeaderName="Login" isback={false} />
+      <LogInForm handleLogin={handleLogin} />
+ 
+      {loading && (
+       <Refresh/>
+      )}
     </View>
   );
 }

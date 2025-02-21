@@ -2,61 +2,43 @@ import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { SignUpFire } from '@/Firebase/Auth/RegisterFirebase';
+import RegisterForm from '@/Components/AuthComp/Register/RegisterForm';
+import Header from '@/Components/AuthComp/Register/Header';
+import { AddUser } from '@/Firebase/FireStore/FireStoreUser';
+import Refresh from './refresh';
+export default function register() { 
+const [loading, setLoading] = useState(false);
 
-export default function register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleRegister = () => {
-     
+  type Register={
+    name:string,
+    surname:string,
+    email:string,
+    birthYear:string,
+    password:string
+    passwordCheck:string
+  }
+  const handleRegister = async (formData:Register) => {
+     console.log(formData.name)
     try{
-      SignUpFire(email,password)
+      setLoading(true); 
+     const id= await SignUpFire(formData.email,formData.password)
+     console.log(id)
+      await AddUser(formData.name,formData.surname,Number(formData.birthYear),id)
+      setLoading(false);
       router.replace('/signIn')
     }catch(error){
       alert('there occur an error')
     }
     
-  };
+  }; 
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Kayıt Ol</Text>
-
-      <TextInput
-        placeholder="E-posta"
-        value={email}
-        onChangeText={setEmail}
-        style={{
-          width: 250,
-          height: 40,
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 10,
-          paddingHorizontal: 10,
-          borderRadius: 5,
-        }}
-      />
-
-      <TextInput
-        placeholder="Şifre"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{
-          width: 250,
-          height: 40,
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 10,
-          paddingHorizontal: 10,
-          borderRadius: 5,
-        }}
-      />
-
-      <Button title="Kayıt Ol" onPress={handleRegister} />
-      <TouchableOpacity onPress={() => router.push('/signIn')}>
-              <Text style={{ marginTop: 15, color: 'blue' }}>Giriş</Text>
-            </TouchableOpacity>
+    <View style={{ flex: 1}}> 
+    <Header HeaderName='Register' isback={true}/>
+       <RegisterForm handleRegister={handleRegister}/>
+        {loading && (
+              <Refresh/>
+             )}
     </View>
   );
 }

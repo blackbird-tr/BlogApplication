@@ -11,17 +11,29 @@ import {
 } from "react-native"; 
 import { getMyBlog,undeployBlog,addmyBlog,deleteBlog,deployBlog,updateBlog, } from "@/BlogProcess/BlogProcess";
 import { DeleteDatabase } from "@/SQLite/SqLiteProcess";
-import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess"; 
+import * as SQLite from 'expo-sqlite'; 
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { blogTable } from "@/db/schema";
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import migrations from '../../../drizzle/migrations';
 interface BlogType {
   id: number;
   name: string;
   content: string;
 }
 
+const expo = SQLite.openDatabaseSync('db.db');
+const db = drizzle(expo);
 export default function App() { 
   const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
   const { session } = useSession();
+  const { success, error } = useMigrations(db, migrations);
+
+  useEffect(() => {
+     
+  }, [success]);
+
 
   useEffect(() => {
     async function fetchBlogs() {
@@ -35,15 +47,7 @@ export default function App() {
     }
     fetchBlogs();
   }, [refresh]);
-
-  const DeleteDb = async () => {
-    try {
-      await DeleteDatabase();
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error("Failed to delete db", error);
-    }
-  };
+ 
 
   const DeleteMyBlog = async (id: number) => {
     try {
@@ -135,9 +139,7 @@ export default function App() {
       <TouchableOpacity style={styles.button} onPress={handleButton}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button2} onPress={DeleteDb}>
-        <Text style={styles.buttonText}>delete</Text>
-      </TouchableOpacity>
+       
     </View>
   );
 }
