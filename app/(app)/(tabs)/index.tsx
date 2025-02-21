@@ -48,15 +48,7 @@ export default function App() {
     }
     fetchBlogs();
   }, [refresh]);
-
-  const DeleteDb = async () => {
-    try {
-      await DeleteDatabase();
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error("Failed to delete db", error);
-    }
-  };
+ 
 
   const DeleteMyBlog = async (id: number) => {
     try {
@@ -148,9 +140,7 @@ export default function App() {
       <TouchableOpacity style={styles.button} onPress={handleButton}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button2} onPress={DeleteDb}>
-        <Text style={styles.buttonText}>delete</Text>
-      </TouchableOpacity>
+       
     </View>
   );
 }
