@@ -2,6 +2,8 @@ import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { useSession } from '@/context/ctx';
+import LogInForm from '@/Components/AuthComp/Login/LogInForm';
+import Header from '@/Components/AuthComp/Register/Header';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -16,45 +18,12 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Giriş Yap</Text>
+    <View style={{ flex: 1}}>
+       <Header HeaderName='Login' isback={false}/>
 
-      <TextInput
-        placeholder="E-posta"
-        value={email}
-        onChangeText={setEmail}
-        style={{
-          width: 250,
-          height: 40,
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 10,
-          paddingHorizontal: 10,
-          borderRadius: 5,
-        }}
-      />
+        <LogInForm/>
 
-      <TextInput
-        placeholder="Şifre"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{
-          width: 250,
-          height: 40,
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 10,
-          paddingHorizontal: 10,
-          borderRadius: 5,
-        }}
-      />
-
-      <Button title="Giriş Yap" onPress={handleLogin} />
-
-      <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={{ marginTop: 15, color: 'blue' }}>Kayıt Ol</Text>
-      </TouchableOpacity>
+     
     </View>
   );
 }

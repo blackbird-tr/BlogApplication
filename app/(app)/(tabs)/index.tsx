@@ -11,7 +11,6 @@ import {
 } from "react-native"; 
 import { getMyBlog,undeployBlog,addmyBlog,deleteBlog,deployBlog,updateBlog, } from "@/BlogProcess/BlogProcess";
 import { DeleteDatabase } from "@/SQLite/SqLiteProcess";
-import { DeployBlog } from "@/Firebase/FireStore/FireStoreProcess";  
 import * as SQLite from 'expo-sqlite'; 
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { blogTable } from "@/db/schema";

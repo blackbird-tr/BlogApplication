@@ -5,7 +5,7 @@ import { Pressable, TouchableOpacity } from "react-native";
 
 import { useColorScheme } from "@/Constants/useColorScheme";
 import { useClientOnlyValue } from "@/Constants/useClientOnlyValue.web";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useSession } from "@/context/ctx";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -37,7 +37,7 @@ export default function TabLayout() {
                 signOut();
               }}
             >
-              <Ionicons name="person-circle-outline" size={24} color="black" />
+              <AntDesign style={{marginRight:20}} name="logout" size={24} color="black" />
             </TouchableOpacity>
           ),
         }}
