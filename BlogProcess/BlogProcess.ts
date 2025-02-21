@@ -1,6 +1,6 @@
 
 import { AddMyBlog,DeleteMyBlog,GetMyBlogs,UpdateMyBlog,DeleteDatabase } from '@/SQLite/SqLiteProcess';
-import { GetFireBlogs,DeleteFireBlog,UpdateFireBlog,DeployBlog,CheckBlogExists } from '@/Firebase/FireStore/FireStoreProcess';
+import { GetFireBlogs,DeleteFireBlog,UpdateFireBlog,DeployBlog,CheckBlogExists } from '@/Firebase/FireStore/FireStoreBlog';
 import { useEffect, useState } from 'react';
 
 interface BlogType {
