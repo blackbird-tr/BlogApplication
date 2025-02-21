@@ -1,17 +1,14 @@
 import {createUserWithEmailAndPassword  } from "firebase/auth";
-import {auth} from '../firebaseConfig'
+import {auth} from '../firebaseConfig' 
 
 
-
-export function SignUpFire(email:string,password:string){
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => { 
-      const user = userCredential.user; 
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message; 
-    });
-
+export async function SignUpFire(email: string, password: string) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    return userCredential.user.uid;
+  } catch (error: any) {
+    console.error('Kayıt olurken hata:', error.message);
+    throw error;  
+  }
 }
 

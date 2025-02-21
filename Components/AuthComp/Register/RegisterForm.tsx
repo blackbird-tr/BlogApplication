@@ -19,7 +19,18 @@ const InputField = ({ label, value, onChangeText, secureTextEntry }: InputFieldP
     />
   </View>
 );
-export default function RegisterForm() {
+type Register={
+  name:string,
+  surname:string,
+  email:string,
+  birthYear:string,
+  password:string
+  passwordCheck:string
+}
+interface Props{
+handleRegister:(formData:Register)=>void
+}
+export default function RegisterForm({handleRegister}:Props) {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -39,10 +50,8 @@ export default function RegisterForm() {
       .max(new Date().getFullYear(), 'Gelecekte doğum yılı olamaz'),
     email: Yup.string().email('Geçersiz email').required('Email gereklidir'),
     password: Yup.string().min(6, 'Şifre en az 6 karakter olmalıdır').required('Şifre gereklidir'),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'Şifreler eşleşmiyor')
-      .required('Şifre doğrulama gereklidir'),
-  });
+     
+});
 
 
 
@@ -50,10 +59,23 @@ export default function RegisterForm() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
   const handleSubmit = async () => {
+    const newErrors: Record<string, string> = {}; 
+  if (!formData.passwordCheck) {
+    newErrors.confirmPassword = 'Şifre doğrulama gereklidir';
+  } else if (formData.passwordCheck !== formData.password) {
+    newErrors.confirmPassword = 'Şifreler eşleşmiyor';
+  }
+
+  // Eğer hata varsa işlemi durdur
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       setErrors({});
       console.log('Form başarıyla gönderildi!', formData);
+      handleRegister(formData)
     } catch (validationErrors: any) {
       const newErrors: any = {};
       validationErrors.inner.forEach((error: any) => {

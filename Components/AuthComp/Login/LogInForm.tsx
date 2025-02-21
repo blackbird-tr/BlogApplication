@@ -28,8 +28,15 @@ const InputField = ({
       </View>
   );
 };
+type FormData = {
+  email: string;
+  password: string;
+};
+type Props={
+  handleLogin:(formDATA:FormData)=>void;
+}
 
-export default function LogInForm() {
+export default function LogInForm({handleLogin}:Props) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -45,11 +52,14 @@ export default function LogInForm() {
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+   
   const handleSubmit = async () => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       setErrors({});
-      console.log('Form başarıyla gönderildi!', formData);
+      
+      handleLogin(formData)
     } catch (validationErrors: any) {
       const newErrors: any = {};
       validationErrors.inner.forEach((error: any) => {
@@ -73,6 +83,7 @@ export default function LogInForm() {
         label="Password"
         value={formData.password}
         onChangeText={(text) => handleChange("password", text)}
+        secureTextEntry={true}
       />
       {errors.password && (
         <Text style={styles.errorText}>{errors.password}</Text>
