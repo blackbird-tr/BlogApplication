@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { addmyBlog, undeployBlog, updateBlog } from "@/BlogProcess/BlogProcess";
 import { useSession } from "@/context/ctx";
+import Refresh from "../refresh";
 
 export default function AddBlog() {
   const { b_id, mname, mcontent } = useLocalSearchParams();
-
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState<string>(mname?.toString() || "");
   const [content, setContent] = useState<string>(mcontent?.toString() || "");
 
@@ -18,7 +19,9 @@ export default function AddBlog() {
       if (!session) {
         return;
       }
+      setLoading(true);
       await updateBlog(name, content, id, session);
+      setLoading(false);
     } catch (error) {
       console.error("Failed to delete blog", error);
     }
@@ -30,10 +33,14 @@ export default function AddBlog() {
     if (name.trim() === "" || content.trim() === "") return;
 
     try {
-      if (blogid > 0) { 
+      if (blogid > 0) {
+        setLoading(true);
         await Updateblog(name, content, blogid);
+        setLoading(false);
       } else {
+        setLoading(true);
         await addmyBlog(name, content);
+        setLoading(false);
       }
     } catch (error) {
       alert("failed");
@@ -84,6 +91,7 @@ export default function AddBlog() {
           <Button title="Update" onPress={handleSave} />
         </>
       )}
+      {loading && <Refresh/>}
     </View>
   );
 }

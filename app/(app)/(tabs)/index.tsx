@@ -22,6 +22,7 @@ import { drizzle } from "drizzle-orm/expo-sqlite";
 import { blogTable } from "@/db/schema";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../../../drizzle/migrations";
+import Refresh from "@/app/refresh";
 interface BlogType {
   id: number;
   name: string;
@@ -34,15 +35,17 @@ const db = drizzle(expo);
 export default function App() {
   const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { session } = useSession();
   const { success, error } = useMigrations(db, migrations);
-
   useEffect(() => {}, [success]);
 
   useEffect(() => {
     async function fetchBlogs() {
       try {
+        setLoading(true);
         const data = await getMyBlog();
+        setLoading(false);
         console.log(data);
         setBlogs(data);
       } catch (error) {
@@ -57,8 +60,10 @@ export default function App() {
       if (!session) {
         return;
       }
-
+      setLoading(true);
       await deleteBlog(id, session);
+      setLoading(false);
+
       setRefresh((prev) => !prev);
     } catch (error) {
       console.error("Failed to delete blog", error);
@@ -86,21 +91,27 @@ export default function App() {
 
   const DeployBlog = async (blog: BlogType) => {
     console.log(blog);
-    
+
     if (!session) {
       return;
     }
+    setLoading(true);
     await deployBlog(blog.id, blog.name, blog.content, session);
-    setRefresh(!refresh)
+    setLoading(false);
+
+    setRefresh(!refresh);
   };
   const UnDeployBlog = async (blog: BlogType) => {
     console.log(blog);
-    
+
     if (!session) {
       return;
     }
-   await undeployBlog(blog.id, session);
-    setRefresh(!refresh)
+    setLoading(true);
+    await undeployBlog(blog.id, session);
+    setLoading(false);
+
+    setRefresh(!refresh);
   };
 
   return (
@@ -126,7 +137,7 @@ export default function App() {
               >
                 <Text style={styles.buttonText}>Güncelle</Text>
               </TouchableOpacity>
-              {blog.isDeploy ==0 ? (
+              {blog.isDeploy == 0 ? (
                 <TouchableOpacity
                   style={styles.deployButton}
                   onPress={() => DeployBlog(blog)}
@@ -150,6 +161,7 @@ export default function App() {
       <TouchableOpacity style={styles.button} onPress={handleButton}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
+      {loading && <Refresh />}
     </View>
   );
 }
