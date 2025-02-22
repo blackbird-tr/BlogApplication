@@ -102,7 +102,7 @@ export default function RegisterForm({handleRegister}:Props) {
       <InputField label="Password Again" value={formData.passwordCheck} secureTextEntry={true} onChangeText={(text) => handleChange("passwordCheck", text)} />
       {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
       <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-      <Text style={styles.buttonText}>{'Save'}</Text>
+      <Text style={styles.buttonText}>{'Register'}</Text>
     </TouchableOpacity> 
     
     </ScrollView>

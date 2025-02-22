@@ -1,26 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { signOut } from "firebase/auth";
 type Props = {
   HeaderName: string;
-  isback: boolean;
+  logOut:()=>void;
 };
-export default function Header({ HeaderName, isback }: Props) {
+export default function Header({ HeaderName, logOut }: Props) {
+    const handleLogOut=async ()=>{
+        await logOut();
+    }
   return (
     <View style={styles.headerView}>
-      {isback && (
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons
-            name="arrow-back"
-            size={24}
-            color="rgba(59, 57, 57, 0.81)"
-          />
-        </TouchableOpacity>
-      )}
-
       <Text style={styles.headerText}>{HeaderName}</Text>
 
+        <TouchableOpacity onPress={handleLogOut}>
+        <Octicons name="sign-out" size={24} color="rgba(37, 36, 36, 0.84)" />
+        </TouchableOpacity>
       <View style={styles.iconPlaceholder} />
     </View>
   );
@@ -28,12 +25,11 @@ export default function Header({ HeaderName, isback }: Props) {
 
 const styles = StyleSheet.create({
   headerView: {
-    flexDirection: "row",
+    
     backgroundColor: "#f9f9f9",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingHorizontal: 16,
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    width: "100%", 
     height: 50,
   },
   headerText: {

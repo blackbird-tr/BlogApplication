@@ -90,7 +90,7 @@ export default function LogInForm({handleLogin}:Props) {
       )}
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>{"Save"}</Text>
+        <Text style={styles.buttonText}>{"LogIn"}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/register')}>
         <Text style={styles.registerText}>Don't you have an account ? Register</Text>

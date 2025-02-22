@@ -24,7 +24,7 @@ export default function LoginScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header HeaderName="Login" isback={false} />
+      <Header HeaderName="Login" isback={true} />
       <LogInForm handleLogin={handleLogin} />
  
       {loading && (

@@ -31,15 +31,7 @@ export default function TabLayout() {
         options={{
           title: "Tab One",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => {
-                signOut();
-              }}
-            >
-              <AntDesign style={{marginRight:20}} name="logout" size={24} color="black" />
-            </TouchableOpacity>
-          ),
+          headerShown:false
         }}
       />
       <Tabs.Screen
@@ -47,6 +39,7 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown:false
         }}
       />
     </Tabs>
