@@ -22,8 +22,7 @@ export default function AppLayout() {
   // This layout can be deferred because it's not the root layout.
   return(
     <Stack>
-      <Stack.Screen name='(tabs)' options={{headerShown:false}}></Stack.Screen>
-      <Stack.Screen name='blogdetail' options={{headerShown:false}}></Stack.Screen>
+      <Stack.Screen name='(tabs)' options={{headerShown:false}}></Stack.Screen> 
       <Stack.Screen name='addBlog' options={{headerShown:false}}></Stack.Screen>
     </Stack>
   )
