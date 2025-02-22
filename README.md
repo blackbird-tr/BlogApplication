@@ -34,7 +34,7 @@ To run BlogApp on your local machine, follow these steps:
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/blackbird-tr/BlogApplication.git  // Replace with your repository URL
+    git clone https://github.com/blackbird-tr/BlogApplication.git  
     ```
 
 2.  **Install dependencies:**
@@ -64,9 +64,13 @@ BlogApp allows users to:
 *   **Sync Blogs:** Changes made locally are automatically synced with Firestore when online, and vice-versa.
 *   **Authenticate:** Securely sign up/sign in using Firebase Authentication.
 
-## 🔄 Contributions
+## 🔄 Some Images
 
-Contributions are welcome! Feel free to fork the repository and submit pull requests. Please follow the existing code style and ensure your changes are well-tested.
+<p align="center">
+  <img src="./assets/images/home.png"  width="250" />
+  <img src="./assets/images/edit.png" width="250" /> 
+  <img src="./assets/images/shared.png" width="250" />
+</p>
 
 ## 🎉 Contact
 
