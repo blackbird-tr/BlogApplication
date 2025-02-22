@@ -8,18 +8,9 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-import {
-  getMyBlog,
-  undeployBlog,
-  addmyBlog,
-  deleteBlog,
-  deployBlog,
-  updateBlog,
-} from "@/BlogProcess/BlogProcess";
-import { DeleteDatabase } from "@/SQLite/SqLiteProcess";
+import { getMyBlog, undeployBlog, deployBlog } from "@/BlogProcess/BlogProcess";
 import * as SQLite from "expo-sqlite";
 import { drizzle } from "drizzle-orm/expo-sqlite";
-import { blogTable } from "@/db/schema";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../../../drizzle/migrations";
 import Refresh from "@/app/refresh";
@@ -39,7 +30,7 @@ export default function App() {
   const [blogs, setBlogs] = useState<BlogType[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signOut,session  } = useSession(); 
+  const { signOut, session } = useSession();
   const { success, error } = useMigrations(db, migrations);
   useEffect(() => {}, [success]);
 
@@ -113,64 +104,90 @@ export default function App() {
         mname: blog.name,
         b_id: blog.id,
         mcontent: blog.content,
-        isEdit:0 ,
+        isEdit: 0,
       },
     });
   };
   return (
     <>
-    <View>
-        <Header HeaderName="My Blogs"  logOut={signOut} />
-    </View>
-    <View style={styles.container}> 
-
-      <FlatList
-        data={blogs}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item: blog }) => (
-          <TouchableOpacity
-            key={blog.id}
-            style={styles.blogCard}
-            onPress={() => handleDetail(blog)}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
+      <View style={{ backgroundColor: "#f9f9f9" }}>
+        <Header HeaderName="My Blogs" logOut={signOut} />
+      </View>
+      <View style={styles.container}>
+        <FlatList
+          data={blogs}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item: blog }) => (
+            <TouchableOpacity
+              key={blog.id}
+              style={styles.blogCard}
+              onPress={() => handleDetail(blog)}
             >
-              <View style={{ flex: 1 }}>
-                <Text style={styles.blogName}>{blog.name}</Text>
-                <Text style={styles.blogContent}>{blog.content}</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.blogName}>{blog.name}</Text>
+                  <Text style={styles.blogContent}>{blog.content}</Text>
+                </View>
+
+                {blog.isDeploy === 0 ? (
+                  <TouchableOpacity
+                    style={{ alignItems: "center" }}
+                    onPress={() => DeployBlog(blog)}
+                  >
+                    <FontAwesome
+                      name="send-o"
+                      size={24}
+                      color="rgba(63, 127, 245, 0.72)"
+                    />
+                    <Text
+                      style={{
+                        fontStyle: "italic",
+                        fontWeight: "200",
+                        marginTop: 4,
+                      }}
+                    >
+                      Share My Blog
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{ alignItems: "center" }}
+                    onPress={() => UnDeployBlog(blog)}
+                  >
+                    <MaterialIcons
+                      name="cancel-schedule-send"
+                      size={24}
+                      color="rgba(245, 63, 63, 0.72)"
+                    />
+                    <Text
+                      style={{
+                        fontStyle: "italic",
+                        fontWeight: "200",
+                        marginTop: 4,
+                      }}
+                    >
+                      Undo Share My Blog
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={<Text>No blogs available</Text>}
+        />
 
-              {blog.isDeploy === 0 ? (
-                <TouchableOpacity style={{alignItems:'center'}} onPress={()=>DeployBlog(blog)}> 
-                  <FontAwesome name="send-o" size={24} color="rgba(63, 127, 245, 0.72)" />
-                  <Text style={{fontStyle:'italic', fontWeight:'200', marginTop:4}}>Share My Blog</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={{alignItems:'center'}} onPress={()=>UnDeployBlog(blog)}> 
-                  <MaterialIcons
-                    name="cancel-schedule-send"
-                    size={24}
-                    color="rgba(245, 63, 63, 0.72)"
-                  />
-                  <Text style={{fontStyle:'italic', fontWeight:'200', marginTop:4}}>Undo Share My Blog</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={<Text>No blogs available</Text>}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleButton}>
-        <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
-      {loading && <Refresh />}
-    </View></>
+        <TouchableOpacity style={styles.button} onPress={handleButton}>
+          <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
+        {loading && <Refresh />}
+      </View>
+    </>
   );
 }
 
@@ -221,8 +238,8 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     backgroundColor: "white",
-    borderWidth:2,
-    borderColor:'rgba(63, 127, 245, 0.72)',
+    borderWidth: 2,
+    borderColor: "rgba(63, 127, 245, 0.72)",
     justifyContent: "center",
     alignItems: "center",
   },

@@ -5,7 +5,6 @@ import {
   Alert,
   StyleSheet,
   Pressable,
-  ScrollView,
   TextInput,
 } from "react-native";
 import React from "react";
@@ -53,31 +52,49 @@ export default function BlogModal({
                 style={styles.textArea}
                 value={blog.bContent}
                 multiline={true}
-                editable={false}  
-                scrollEnabled={true}  
+                editable={false}
+                scrollEnabled={true}
               />
-               <View style={{flexDirection:'row',alignItems:'center'}}>
-               <FontAwesome5 name="book-reader" size={24} color='rgba(126, 121, 121, 0.82)'/>
-               <View style={{marginStart:12}}>
-               <View style={{flexDirection:'row',alignItems:'center'}}>
-                <Text style={{color:'rgba(126, 121, 121, 0.82)', fontStyle:'italic',marginEnd:8}}>Name: </Text>
-                <Text>{user.uName}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <FontAwesome5
+                  name="book-reader"
+                  size={24}
+                  color="rgba(108, 160, 212, 0.83)"
+                />
+                <View style={{ marginStart: 12 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text
+                      style={{
+                        color: "rgba(126, 121, 121, 0.82)",
+                        fontStyle: "italic",
+                        marginEnd: 8,
+                      }}
+                    >
+                      Name:{" "}
+                    </Text>
+                    <Text>{user.uName}</Text>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text
+                      style={{
+                        color: "rgba(126, 121, 121, 0.82)",
+                        fontStyle: "italic",
+                        marginEnd: 8,
+                      }}
+                    >
+                      Surname:{" "}
+                    </Text>
+                    <Text>{user.uSurname}</Text>
+                  </View>
                 </View>
-                <View style={{flexDirection:'row',alignItems:'center'}}>
-                <Text style={{color:'rgba(126, 121, 121, 0.82)', fontStyle:'italic',marginEnd:8}}>Surname: </Text>
-                <Text>{user.uSurname}</Text>
-                </View>
-               
-                
-               </View>
-               </View>
+              </View>
             </View>
 
             <Pressable
               style={styles.button}
               onPress={() => setModalVisible(!modalVisible)}
             >
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              <Text style={styles.textStyle}>Close</Text>
             </Pressable>
           </View>
         </View>
