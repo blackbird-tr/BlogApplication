@@ -5,6 +5,8 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { getFireBlog } from '@/BlogProcess/BlogProcess';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSession } from '@/context/ctx';
+import Header from '../header';
 
 export default function deployedblog() {
   const [blogs, setBlogs] = useState<Array<any>>([]);
@@ -16,7 +18,7 @@ export default function deployedblog() {
     setBlogs(fetchedBlogs);
     setLoading(false);
   };
- 
+  const { signOut } = useSession();
   useFocusEffect(
     useCallback(() => {
       fetchBlogs();  
@@ -31,7 +33,11 @@ export default function deployedblog() {
   );
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <>
+    <View>
+      <Header HeaderName="Shared Blogs"  logOut={signOut} />
+    </View>
+    <View style={{ flex: 1, padding: 20, backgroundColor: "#f9f9f9" }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
         <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Bloglar</Text>
         <TouchableOpacity onPress={fetchBlogs} disabled={loading}>
@@ -48,6 +54,6 @@ export default function deployedblog() {
           </View>
         }
       />
-    </View>
+    </View></>
   );
 }
