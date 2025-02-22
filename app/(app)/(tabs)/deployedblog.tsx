@@ -1,9 +1,10 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { router } from 'expo-router';
 
 import { Ionicons } from '@expo/vector-icons';
 import { getFireBlog } from '@/BlogProcess/BlogProcess';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function deployedblog() {
   const [blogs, setBlogs] = useState<Array<any>>([]);
@@ -15,11 +16,12 @@ export default function deployedblog() {
     setBlogs(fetchedBlogs);
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
+ 
+  useFocusEffect(
+    useCallback(() => {
+      fetchBlogs();  
+    }, [])
+  );
   const renderItem = ({ item }: { item: any }) => (
     <View style={{ padding: 10, borderBottomWidth: 1, borderColor: '#ccc' }}>
       <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.name}</Text>
