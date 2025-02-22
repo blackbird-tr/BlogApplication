@@ -1,5 +1,5 @@
 import { db } from "../firebaseConfig";
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, query, where } from "firebase/firestore";
 interface UserType {
   id: string; 
   name: string;
@@ -29,7 +29,33 @@ export async function AddUser(
     console.error("User eklenirken hata oluştu:", error);
   }
 }
- 
+type FireUser = {
+  id: string;
+  user_id: string;
+  name: string;
+  surname: string;
+};
+
+export async function GetFireUserByUserId(userId: string): Promise<FireUser | null> {
+  try {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("user_id", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userData = { id: userDoc.id, ...userDoc.data() } as FireUser; // Tür dönüşümü
+      console.log("User başarıyla çekildi:", userData);
+      return userData;
+    } else {
+      console.warn("Belirtilen user_id ile eşleşen user bulunamadı:", userId);
+      return null;
+    }
+  } catch (error) {
+    console.error("User çekilirken hata oluştu:", error);
+    return null;
+  }
+}
 export async function GetFireUsers() {
   try {
     const usersCollection = collection(db, "users");
