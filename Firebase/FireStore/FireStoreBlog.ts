@@ -1,5 +1,13 @@
 import { db } from "../firebaseConfig";
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 interface BlogType {
   id: string;
   b_id: number;
@@ -30,7 +38,7 @@ export async function DeployBlog(
     console.error("Blog eklenirken hata oluştu:", error);
   }
 }
- 
+
 export async function GetFireBlogs() {
   try {
     const blogsCollection = collection(db, "blogs");
@@ -47,18 +55,21 @@ export async function GetFireBlogs() {
     return [];
   }
 }
- 
-export async function DeleteFireBlog(id: string) { 
-  try { 
-    const blogRef = doc(db, "blogs", id); 
-    await deleteDoc(blogRef); 
+
+export async function DeleteFireBlog(id: string) {
+  try {
+    const blogRef = doc(db, "blogs", id);
+    await deleteDoc(blogRef);
     console.log("Blog başarıyla silindi:", id);
   } catch (error) {
     console.error("Blog silinirken hata oluştu:", error);
   }
 }
- 
-export async function UpdateFireBlog(id: string, updatedData: { name?: string; content?: string }) {
+
+export async function UpdateFireBlog(
+  id: string,
+  updatedData: { name?: string; content?: string }
+) {
   try {
     const blogRef = doc(db, "blogs", id);
     const blogSnap = await getDoc(blogRef);
@@ -78,13 +89,15 @@ export async function CheckBlogExists(user_id: string, b_id: number) {
   try {
     const blogsCollection = collection(db, "blogs");
     const blogsSnapshot = await getDocs(blogsCollection);
-    
+
     const blogsList: BlogType[] = blogsSnapshot.docs.map((doc) => {
       const data = doc.data() as BlogType;
-      return { ...data, id: doc.id }; 
+      return { ...data, id: doc.id };
     });
 
-    const foundBlog = blogsList.find((blog) => blog.user_id === user_id && blog.b_id === b_id);
+    const foundBlog = blogsList.find(
+      (blog) => blog.user_id === user_id && blog.b_id === b_id
+    );
 
     if (foundBlog) {
       console.log("Belirtilen user_id ve b_id ile blog bulundu:", foundBlog);
@@ -98,4 +111,3 @@ export async function CheckBlogExists(user_id: string, b_id: number) {
     return null;
   }
 }
-
