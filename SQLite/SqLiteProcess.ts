@@ -2,11 +2,14 @@ import { drizzle } from "drizzle-orm/expo-sqlite";
 import { blogTable } from "../db/schema";
 import * as SQLite from "expo-sqlite";
 import { eq } from "drizzle-orm";
- 
+
 const expo = SQLite.openDatabaseSync("db.db");
 const db = drizzle(expo);
- 
-async function executeQuery<T>(query: Promise<T>, errorMessage: string): Promise<T> {
+
+async function executeQuery<T>(
+  query: Promise<T>,
+  errorMessage: string
+): Promise<T> {
   try {
     return await query;
   } catch (error) {
@@ -37,13 +40,10 @@ export async function UpdateMyBlog(id: number, name: string, content: string) {
 }
 export async function UpdateBlogDeployStatus(id: number, isDeploy: number) {
   return executeQuery(
-    db.update(blogTable)
-      .set({ isDeploy })
-      .where(eq(blogTable.id, id)),
+    db.update(blogTable).set({ isDeploy }).where(eq(blogTable.id, id)),
     "Update deploy status failed"
   );
 }
-
 
 export async function DeleteMyBlog(id: number) {
   return executeQuery(

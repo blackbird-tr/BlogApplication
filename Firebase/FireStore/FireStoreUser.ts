@@ -1,27 +1,29 @@
 import { db } from "../firebaseConfig";
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, query, where } from "firebase/firestore";
-interface UserType {
-  id: string; 
-  name: string;
-  surname: string;
-  birth_year:number;
-  user_id: string; 
-}
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  query,
+  where,
+} from "firebase/firestore";
 
-export async function AddUser( 
+export async function AddUser(
   name: string,
   surname: string,
-  birth_year:number,
+  birth_year: number,
   user_id: string
 ) {
   try {
     const usersCollection = collection(db, "users");
     const docRef = await addDoc(usersCollection, {
-      
       name,
       surname,
       birth_year,
-      user_id
+      user_id,
     });
 
     console.log("User başarıyla eklendi! ID:", docRef.id);
@@ -36,7 +38,9 @@ type FireUser = {
   surname: string;
 };
 
-export async function GetFireUserByUserId(userId: string): Promise<FireUser | null> {
+export async function GetFireUserByUserId(
+  userId: string
+): Promise<FireUser | null> {
   try {
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("user_id", "==", userId));
@@ -72,18 +76,21 @@ export async function GetFireUsers() {
     return [];
   }
 }
- 
-export async function DeleteFireUser(id: string) { 
-  try { 
-    const userRef = doc(db, "users", id); 
-    await deleteDoc(userRef); 
+
+export async function DeleteFireUser(id: string) {
+  try {
+    const userRef = doc(db, "users", id);
+    await deleteDoc(userRef);
     console.log("User başarıyla silindi:", id);
   } catch (error) {
     console.error("User silinirken hata oluştu:", error);
   }
 }
- 
-export async function UpdateFireUser(id: string, updatedData: { name?: string; surname?: string; birth_year:number; }) {
+
+export async function UpdateFireUser(
+  id: string,
+  updatedData: { name?: string; surname?: string; birth_year: number }
+) {
   try {
     const userRef = doc(db, "users", id);
     const userSnap = await getDoc(userRef);
@@ -98,4 +105,4 @@ export async function UpdateFireUser(id: string, updatedData: { name?: string; s
   } catch (error) {
     console.error("User güncellenirken hata oluştu:", error);
   }
-} 
+}
