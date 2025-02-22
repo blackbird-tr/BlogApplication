@@ -1,9 +1,8 @@
-import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
-import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { addmyBlog, undeployBlog, updateBlog } from "@/BlogProcess/BlogProcess";
+import { addmyBlog, updateBlog } from "@/BlogProcess/BlogProcess";
 import { useSession } from "@/context/ctx";
-import Refresh from "../refresh";
 import AddBlogForm from "@/Components/BlogComp/AddBlogForm";
 import Header from "@/Components/AuthComp/Register/Header";
 
@@ -53,17 +52,16 @@ export default function AddBlog() {
   return (
     <View>
       {blogid > 0 ? (
-  <>
-    {isEdit === '0' ? (
-      <Header HeaderName="Blog View" isback={true} />
-    ) : (
-      <Header HeaderName="Blog Update" isback={true} />
-    )}
-  </>
-) : (
-  <Header HeaderName="Blog Add" isback={true} />
-)}
-
+        <>
+          {isEdit === "0" ? (
+            <Header HeaderName="Blog View" isback={true} />
+          ) : (
+            <Header HeaderName="Blog Update" isback={true} />
+          )}
+        </>
+      ) : (
+        <Header HeaderName="Blog Add" isback={true} />
+      )}
 
       <AddBlogForm
         blogid={blogid}

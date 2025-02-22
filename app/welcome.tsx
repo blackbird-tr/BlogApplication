@@ -1,19 +1,29 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar"; // StatusBar'ı import et
 import { router } from "expo-router";
 
 export default function Welcome() {
   return (
-    <LinearGradient colors={["#0F2027", "#203A43", "#2C5364"]} style={styles.container}>
+    <LinearGradient
+      colors={["#A2C8E2", "#C4E4F7", "#E3F1FB"]}
+      style={styles.container}
+    >
+      <StatusBar style="light" /> {/* Status bar rengini beyaz yap */}
+      {/* Metinler için Text bileşenini kullan */}
       <Text style={styles.title}>Welcome to Blog App</Text>
       <Text style={styles.subtitle}>Stay connected with your thoughts</Text>
-      
-      <TouchableOpacity style={styles.button} onPress={()=>router.push('/signIn')}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/signIn")}
+      >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={()=>router.push('/register')}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/register")}
+      >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </LinearGradient>
@@ -21,7 +31,7 @@ export default function Welcome() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -44,12 +54,12 @@ const styles = StyleSheet.create({
     width: 220,
     padding: 15,
     borderRadius: 30,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#6EC1E4",
     alignItems: "center",
     marginVertical: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 6,
   },
